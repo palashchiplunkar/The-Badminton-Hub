@@ -1,0 +1,86 @@
+body {
+  background-color: black;
+}
+.maincontainer img {
+  opacity: 0.6;
+  mix-blend-mode: hard-light;
+  height: 100%;
+  width: 100%;
+}
+.welcome {
+  margin: 0;
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.para {
+  margin: 0;
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.name {
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.welcome1 {
+  color: rgb(223, 222, 222);
+  font-size: 100;
+  font-size: 48px;
+  font-family: "Ubuntu-Bold", sans-serif;
+  font-weight: bolder;
+}
+.line {
+  width: 30vh;
+  height: 2px;
+  background: #fff;
+
+  border-radius: 2vh;
+  margin: 0;
+  position: absolute;
+  top: 55%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.Buttons {
+  margin: 0;
+  position: absolute;
+  top: 70%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+button {
+  border-radius: 25px;
+  width: 200px;
+  padding: 15px 0;
+  margin: 20px 10px;
+  font-weight: bold;
+  border: 1px solid #fff;
+  background: transparent;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+}
+span {
+  background: #fff;
+  height: 100%;
+  width: 0;
+  border-radius: 25px;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  z-index: -1;
+  transition: 0.5s;
+}
+button:hover span {
+  width: 100%;
+}
+button:hover {
+  border: none;
+  color: black;
+}
