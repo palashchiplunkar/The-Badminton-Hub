@@ -1,0 +1,118 @@
+body {
+  background-color: black;
+}
+.imgcontainer {
+  margin: 0;
+  position: absolute;
+  top: 20%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+input,
+textarea {
+  font-family: "Ubuntu-Bold", sans-serif;
+}
+
+input {
+  width: 50%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 3px solid rgb(143, 143, 143);
+  box-sizing: border-box;
+  border-radius: 10px;
+  outline: none;
+  font-size: 15px;
+}
+input:focus,
+textarea:focus {
+  border: 3px solid white;
+}
+::placeholder {
+  color: rgb(211, 210, 210);
+}
+/* Set a style for all buttons */
+button {
+  border-radius: 25px;
+  width: 200px;
+  padding: 15px 0;
+  margin: 20px 10px;
+  font-weight: bold;
+  border: 1px solid #fff;
+  background: transparent;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+}
+textarea {
+  width: 50%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 3px solid rgb(143, 143, 143);
+  box-sizing: border-box;
+  border-radius: 10px;
+  outline: none;
+  font-size: 15px;
+}
+
+/* Add a hover effect for buttons */
+span {
+  background: #fff;
+  height: 100%;
+  width: 0;
+  border-radius: 25px;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  z-index: -1;
+  transition: 0.5s;
+}
+button:hover span {
+  width: 100%;
+}
+button:hover {
+  border: none;
+  color: black;
+}
+
+.divcontainer {
+  margin: 0;
+  position: absolute;
+  top: 55%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+}
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.line {
+  width: 25vh;
+  height: 2px;
+  background: #fff;
+
+  border-radius: 2vh;
+  margin: 0;
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.maincontainer img {
+  opacity: 0.5;
+  height: 100%;
+  width: 100%;
+}
+.error {
+  display: flex;
+  flex-direction: column;
+}

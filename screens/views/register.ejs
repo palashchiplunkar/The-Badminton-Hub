@@ -4,9 +4,95 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300&display=swap"
+      rel="stylesheet"
+    />
+    <title>Create Profile</title>
+    <link rel="stylesheet" href="/register.css" />
   </head>
   <body>
-    <h1>register page</h1>
+    <div class="maincontainer">
+      <img src="/home2.jpg" alt="" />
+    </div>
+    <div class="imgcontainer">
+      <p
+        style="
+          font-family: 'Ubuntu-Bold', sans-serif;
+          color: white;
+          font-size: 30px;
+        "
+      >
+        Create profile
+      </p>
+    <form action="register" method="post">
+     
+      </div>
+      <div class="line"></div>
+      <div class="divcontainer">
+        <div class="container">
+          <input
+            type="text"
+            placeholder="Enter Username"
+            name="uname"
+            required
+          />
+
+          <input
+            type="email"
+            placeholder="Enter Email ID"
+            name="email"
+            required
+          />
+          <input type="date" name="bdate" required />
+          <input
+            type="number"
+            placeholder="Enter Phone number"
+            name="phno"
+            required
+          />
+          <input
+            id="pass1"
+            type="password"
+            placeholder="Enter Password"
+            name="password"
+            required
+          />
+          <input
+            id="pass2"
+            type="password"
+            placeholder="confirm password"
+            name="cpass"
+            required
+          />
+          <textarea
+            name="Address"
+            id=""
+            cols="50"
+            rows="5"
+            placeholder="Enter Address"
+          ></textarea>
+
+          <button type="submit"><span></span>Create</button>
+          <a
+            href="login"
+            style="color: white; font-family: 'Ubuntu-Bold', sans-serif"
+            >Already created?</a
+          >
+        </div>
+      </div>
+    </form>
+    <script>
+      function validate(){
+          let pas1=document.getElementById("pass1").value;
+          let pas2=document.getElementById("pass2").value;
+          if(pas1!=pas2){
+              alert("Passwords are not Matching!!")
+          }
+
+      }
+    </script>
   </body>
 </html>
