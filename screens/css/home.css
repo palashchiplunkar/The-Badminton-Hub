@@ -1,0 +1,109 @@
+body {
+  background-color: black;
+}
+
+ol,
+ul {
+  list-style: none;
+}
+a {
+  color: white;
+  text-decoration: none;
+}
+a:hover {
+  color: white;
+}
+#mainMenu li {
+  padding-left: 20px;
+  padding-top: 10px;
+}
+#mainMenu {
+  display: flex;
+  flex-direction: row;
+}
+
+.navbar-container {
+  background-color: black;
+  color: white;
+  display: flex;
+  flex-direction: row;
+  padding: 20px;
+}
+.navbar-container header p {
+  font-size: 25px;
+}
+.slide-container {
+  height: 25%;
+}
+
+.products-container {
+  background-color: black;
+  width: 90%;
+  margin-left: 70px;
+  height: 500px;
+  margin-top: 20px;
+  border-radius: 10px;
+}
+.products {
+  display: flex;
+}
+.card {
+  margin-top: 80px;
+  margin-left: 45px;
+}
+.line {
+  width: 27vh;
+  height: 2px;
+  background: #fff;
+
+  border-radius: 2vh;
+  margin: 0;
+  position: absolute;
+  top: 92%;
+  left: 110px;
+}
+.Button {
+  border-radius: 25px;
+  width: 150px;
+  padding: 15px 0;
+  margin: 20px 10px;
+  font-weight: bold;
+  border: 1px solid black;
+  background-color: white;
+  color: black;
+  position: relative;
+  overflow: hidden;
+  transition: 0.5s;
+}
+.Button:hover {
+  color: #fff;
+  background-color: black;
+}
+.card img {
+  transition: 0.5s;
+}
+.card img:hover {
+  transform: scale(1.1);
+}
+.card-text-center {
+  margin-left: 10px;
+}
+.card1 {
+  background-color: white;
+  width: 50%;
+}
+
+.footer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+.footer .help p {
+  color: white;
+}
+.footer .about p {
+  color: white;
+}
+.footer .address p {
+  color: white;
+}

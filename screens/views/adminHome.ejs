@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300&display=swap"
+      rel="stylesheet"
+    />
+    <title>Welcome | Admin</title>
+    <link rel="stylesheet" href="/addHome.css" />
+  </head>
+  <body>
+    <div class="maincontainer">
+      <img src="home4.jpg" alt="" height="100%" />
+      <button
+        style="
+          font-family: 'Ubuntu-Bold', sans-serif;
+          color: black;
+          font-size: 15px;
+        "
+        class="profile"
+      >
+        Profile
+      </button>
+    </div>
+
+    <div class="imgcontainer">
+      <p
+        style="
+          font-family: 'Ubuntu-Bold', sans-serif;
+          color: white;
+          font-size: 30px;
+        "
+      >
+        Welcome to Thribhuvan Badminton Hub
+      </p>
+      <p
+        style="
+          font-family: 'Ubuntu-Bold', sans-serif;
+          color: white;
+          font-size: 20px;
+          padding-left: 60px;
+        "
+      >
+        Hey Admin! You can manage the features here
+      </p>
+    </div>
+
+    <div class="divcontainer">
+      <div class="container">
+        <form action="addProducts">
+          <button type="submit" class="button">
+            <span></span>Add Products
+          </button>
+        </form>
+        <form action="">
+          <button type="submit" class="button">
+            <span></span>Add Services
+          </button>
+        </form>
+        <form action="">
+          <button type="submit" class="button">
+            <span></span>Show all Orders
+          </button>
+        </form>
+        <form action="">
+          <button type="submit" class="button">
+            <span></span>Show all Services
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      function validate() {
+        let pas1 = document.getElementById("pass1").value;
+        let pas2 = document.getElementById("pass2").value;
+        if (pas1 != pas2) {
+          alert("Passwords are not Matching!!");
+        }
+      }
+    </script>
+  </body>
+</html>
