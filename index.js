@@ -62,7 +62,7 @@ app.get("/home", (req, res) => {
     res.redirect("login");
   }
 });
-app.post("/home", (req, res) => {
+app.post("/logout", (req, res) => {
   req.session.loggedin = false;
   res.redirect("/");
 });
@@ -86,7 +86,6 @@ app.post("/login", async (req, res) => {
               req.session.userid = results[0].userid;
               console.log(req.session.userid);
               res.redirect("Home");
-              console.log(results);
             }
           } else {
             req.session.loggedin = false;
@@ -150,6 +149,7 @@ app.post("/addProducts", (req, res) => {
     let description = req.body.description;
     let category = req.body.select_product;
     let cost = req.body.cost;
+    console.log(req.body.pname);
     con.query(
       "insert into products(type,cost,description,product_name)values(?,?,?,?)",
       [category, cost, description, pname],
@@ -171,8 +171,8 @@ app.get("/products", (req, res) => {
     result: result,
   });
 });
-app.post("/search_products", (req, res) => {
-  let type = req.body.select_product;
+app.get("/search_products", (req, res) => {
+  let type = req.query.select_product;
 
   try {
     con.query(
@@ -189,13 +189,15 @@ app.post("/search_products", (req, res) => {
 });
 
 app.get("/cart", (req, res) => {
-  con.query(
-    "select ci.product_name,ci.quantity,ci.date_added,ci.price from cart_item ci, cart c where c.userid=? and c.cart_id=ci.cart_id",
-    [req.session.userid],
-    function (error, results, fields, rows) {
-      res.render("cartPage.ejs");
-    }
-  );
+  let sql = `select ci.product_name,ci.quantity,ci.date_added,ci.price from cart_item ci, cart c where c.userid=${req.session.userid} and c.cart_id=ci.cart_id`;
+  try {
+    con.query(sql, function (error, results, fields, rows) {
+      res.render("cartPage.ejs", {
+        result: results,
+      });
+      console.log(results);
+    });
+  } catch (error) {}
 });
 app.post("/cart/:id", (req, res) => {
   con.query(
@@ -256,6 +258,22 @@ app.post("/cart/:id", (req, res) => {
     }
   );
 });
+
+app.get("/profile", (req, res) => {
+  try {
+    con.query(
+      "select * from user_profile where userid=?",
+      [req.session.userid],
+      function (error, results, fields, rows) {
+        console.log(results);
+        res.render("profile.ejs", {
+          result: results,
+        });
+      }
+    );
+  } catch (error) {}
+});
+
 app.listen(port, () => {
   console.log(`app listening at http://localhost:${port}`);
 });

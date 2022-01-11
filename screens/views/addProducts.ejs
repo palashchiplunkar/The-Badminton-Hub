@@ -34,16 +34,12 @@
           font-family: 'Ubuntu-Bold', sans-serif;
           color: white;
           font-size: 20px;
-        
         "
       >
         ***Please Enter all the product details here***
       </p>
-      </div>
+    </div>
     <form action="addProducts" method="post">
-     
-      </div>
-    
       <div class="divcontainer">
         <div class="container">
           <input
@@ -52,31 +48,43 @@
             name="pname"
             required
           />
-
+        </div>
+        <div class="container">
           <textarea
-          name="description"
-          id=""
-          cols="50"
-          rows="5"
-          placeholder="Enter Product Description"
-        ></textarea>
-        <label style="color: white; font-size: large; padding-right: 10px"
-        >Choose Category</label
-      >
-        <select name="select_product" id="select1">
-          <option value="Racquet">Racquets</option>
-          <option value="Shuttle">Shuttle</option>
-          <option value="Shoes">Shoes</option>
-          <option value="Gripper">Grippers</option>
-        </select>
-          
+            name="description"
+            id=""
+            cols="50"
+            rows="5"
+            placeholder="Enter Product Description"
+          ></textarea>
+        </div>
+        <div class="container">
+          <label style="color: white; font-size: large; padding-right: 10px"
+            >Choose Category</label
+          >
+          <select name="select_product" id="select1">
+            <option value="Racquet">Racquets</option>
+            <option value="Shuttle">Shuttle</option>
+            <option value="Shoes">Shoes</option>
+            <option value="Gripper">Grippers</option>
+          </select>
+        </div>
+        <div class="container">
           <input
             type="number"
             placeholder="Enter the cost in INR"
             name="cost"
             required
           />
-
+        </div>
+        <!-- <div class="container">
+          <label
+            for="img"
+            style="color: white; font-size: large; padding-right: 10px"
+            >Select image:</label
+          >
+          <input type="file" id="img" name="img" accept="image/*" />
+        </div> -->
           <button type="submit"><span></span>Add</button>
           <a
             href="AdminHome"
@@ -84,13 +92,12 @@
             >Back</a
           >
           <% if(msg!=''){ %>
-            <script>
-              alert("Product added Successfully!!")
-            </script>
-        <% } %>
+          <script>
+            alert("Product added Successfully!!");
+          </script>
+          <% } %>
         </div>
       </div>
     </form>
-
   </body>
 </html>

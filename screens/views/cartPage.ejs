@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Cart</title>
     <style>
       body {
         margin: 0;
@@ -52,41 +52,34 @@
       .cartpage {
         margin: 80px auto;
       }
-      table {
-        width: 80%;
-        border-collapse: collapse;
-      }
+
       .cart-info {
         display: flex;
         flex-wrap: wrap;
       }
-      th {
-        color: black;
-        background-color: yellow;
-        font-weight: normal;
-      }
-      td {
-        padding: 10px 5px;
-      }
-      td input {
-        height: 30px;
-        width: 40px;
-        padding: 5px;
-      }
-      td a {
-        color: yellow;
-        font-size: 12px;
-      }
-      td img {
-        width: 100px;
-        height: 100px;
-        padding: 10px;
-      }
+
       .header {
         width: 100%;
         display: flex;
         align-items: flex-start;
         justify-content: space-between;
+      }
+
+      table {
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+      }
+
+      td,
+      th {
+        border: 1px solid white;
+        text-align: left;
+        padding: 8px;
+      }
+
+      tr:nth-child(even) {
+        background-color: yellow;
       }
     </style>
   </head>
@@ -98,67 +91,34 @@
       <nav>
         <ul id="mainMenu">
           <li>
-            <a href="home.html"><strong>Home </strong></a>
+            <a href="home">Home</a>
           </li>
           <li><a href="services.html">Services</a></li>
-          <li><a href="products1.html">Products</a></li>
+          <li><a href="products">Products</a></li>
           <li><a href="support.html">Orders</a></li>
-          <li><a href="cartPage.html">Cart</a></li>
+          <li><a href="cart"><strong>Cart</strong></a></li>
           <li style="position: absolute; left: 90%">
-            <a href="contact.html">Profile</a>
+            <a href="profile">Profile</a>
           </li>
         </ul>
       </nav>
     </div>
-    <div class="small-container cartpage">
+    <div>
       <table>
-        <tr class="header">
-          <th>Product</th>
+        <tr>
+          <th>Product Name</th>
           <th>Quantity</th>
-          <th>Subtotal</th>
+          <th>Date Added</th>
+          <th>Price</th>
         </tr>
+      <% for(var i=0;i<result.length;i++) {%>
         <tr>
-          <td>
-            <div class="cart-info">
-              <img src="./product1.jpg" alt="" />
-              <div>
-                <p>Prduct_name</p>
-                <small>Price:$50.00</small><br />
-                <a href="">remove</a>
-              </div>
-            </div>
-          </td>
-          <td><input type="number" value="1" /></td>
-          <td>$50.00</td>
+          <td><%=result[i].product_name%></td>
+          <td><%=result[i].quantity %></td>
+          <td><%=result[i].date_added %></td>
+          <td><%=result[i].price %></td>
         </tr>
-        <tr>
-          <td>
-            <div class="cart-info">
-              <img src="./product1.jpg" alt="" />
-              <div>
-                <p>Prduct_name</p>
-                <small>Price:$50.00</small><br />
-                <a href="">remove</a>
-              </div>
-            </div>
-          </td>
-          <td><input type="number" value="1" /></td>
-          <td>$50.00</td>
-        </tr>
-        <tr>
-          <td>
-            <div class="cart-info">
-              <img src="./product1.jpg" alt="" />
-              <div>
-                <p>Prduct_name</p>
-                <small>Price:$50.00</small><br />
-                <a href="">remove</a>
-              </div>
-            </div>
-          </td>
-          <td><input type="number" value="1" /></td>
-          <td>$50.00</td>
-        </tr>
+        <% } %>
       </table>
     </div>
   </body>

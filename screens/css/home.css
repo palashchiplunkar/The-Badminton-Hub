@@ -55,7 +55,6 @@ a:hover {
   width: 27vh;
   height: 2px;
   background: #fff;
-
   border-radius: 2vh;
   margin: 0;
   position: absolute;
@@ -94,6 +93,12 @@ a:hover {
 }
 
 .footer {
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background-color: black;
+  color: white;
+  text-align: center;
   display: flex;
   flex-direction: row;
   justify-content: space-around;
@@ -106,4 +111,33 @@ a:hover {
 }
 .footer .address p {
   color: white;
+}
+.service-container {
+  position: relative;
+  text-align: center;
+  color: white;
+  width: 70%;
+  height: 70%;
+  margin-left: 15%;
+}
+.top-right {
+  position: absolute;
+  top: 8px;
+  right: 16px;
+}
+.gallery {
+  margin-left: 150px;
+  margin-top: 100px;
+  margin-bottom: 50px;
+  float: left;
+  width: 300px;
+}
+
+.gallery:hover {
+  border: 1px solid #777;
+}
+
+.gallery img {
+  width: 100%;
+  height: auto;
 }
