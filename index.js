@@ -8,7 +8,7 @@ const bodyparser = require("body-parser");
 const session = require("express-session");
 const app = express();
 var mysql = require("mysql");
-
+const fileUpload = require("express-fileupload");
 const req = require("express/lib/request");
 const res = require("express/lib/response");
 
@@ -28,12 +28,13 @@ con.connect(function (err) {
 const port = 5000;
 app.set("views", __dirname + "/screens/views");
 app.use(express.static(__dirname + "/assets"));
+app.use(express.static(__dirname + "/uploads"));
 app.use(express.static(__dirname + "/screens/css"));
 app.set("view-engine", "ejs");
 app.use(express.urlencoded({ extended: false }));
 app.use(bodyparser.urlencoded({ extended: true }));
 app.use(bodyparser.json());
-
+app.use(fileUpload());
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
@@ -80,6 +81,7 @@ app.post("/login", async (req, res) => {
             req.session.useremail = useremail;
             req.session.password = pass;
             if (useremail == "admin@badmintonHub.com") {
+              req.session.userid = results[0].userid;
               req.session.adminlogin = true;
               res.redirect("adminHome");
             } else {
@@ -144,15 +146,25 @@ app.get("/addProducts", (req, res) => {
   }
 });
 app.post("/addProducts", (req, res) => {
+  let samplefile;
+  let uploadPath;
+  if (!req.files || Object.keys(req.files).length === 0) {
+    return res.status(400).send("No files were uploaded");
+  }
+  samplefile = req.files.img;
+  uploadPath = __dirname + "/uploads/" + samplefile.name;
+  samplefile.mv(uploadPath, function (err) {
+    if (err) res.status(500).send(err);
+  });
   try {
     let pname = req.body.pname;
     let description = req.body.description;
     let category = req.body.select_product;
     let cost = req.body.cost;
-    console.log(req.body.pname);
+
     con.query(
-      "insert into products(type,cost,description,product_name)values(?,?,?,?)",
-      [category, cost, description, pname],
+      "insert into products(type,cost,description,product_name,product_image)values(?,?,?,?,?)",
+      [category, cost, description, pname, samplefile.name],
       function (error, results, fields, rows) {
         res.render("addProducts.ejs", {
           msg: "Product added Successfully",
@@ -260,6 +272,7 @@ app.post("/cart/:id", (req, res) => {
 });
 
 app.get("/profile", (req, res) => {
+  console.log(req.session.userid);
   try {
     con.query(
       "select * from user_profile where userid=?",

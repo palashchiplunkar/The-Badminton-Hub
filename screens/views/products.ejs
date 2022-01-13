@@ -253,7 +253,11 @@
       <%if(result.length > 0) { %> <% result.forEach((results, index) => { %>
       <div class="wrapper">
         <div class="product-img">
-          <img src="product1.jpg" height="420" width="327" />
+          <img
+            src="<%=result[index].product_image  %> "
+            height="420"
+            width="327"
+          />
         </div>
         <div class="product-info">
           <div class="product-text">

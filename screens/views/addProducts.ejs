@@ -39,7 +39,7 @@
         ***Please Enter all the product details here***
       </p>
     </div>
-    <form action="addProducts" method="post">
+    <form action="addProducts" method="post" enctype="multipart/form-data" >
       <div class="divcontainer">
         <div class="container">
           <input
@@ -77,14 +77,14 @@
             required
           />
         </div>
-        <!-- <div class="container">
+         <div class="container">
           <label
             for="img"
             style="color: white; font-size: large; padding-right: 10px"
             >Select image:</label
           >
           <input type="file" id="img" name="img" accept="image/*" />
-        </div> -->
+        </div> 
           <button type="submit"><span></span>Add</button>
           <a
             href="AdminHome"
