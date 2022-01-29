@@ -2,7 +2,6 @@ if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
 }
 var todayDate = new Date().toISOString().slice(0, 10);
-console.log(todayDate);
 const express = require("express");
 const bodyparser = require("body-parser");
 const session = require("express-session");
@@ -11,6 +10,7 @@ var mysql = require("mysql");
 const fileUpload = require("express-fileupload");
 const req = require("express/lib/request");
 const res = require("express/lib/response");
+const { loginCheck } = require("./routes/auth");
 
 var con = mysql.createConnection({
   port: 4001,
@@ -101,6 +101,7 @@ app.post("/login", async (req, res) => {
     );
   } catch (error) {}
 });
+// app.post("/login", loginCheck);
 app.post("/register", async (req, res) => {
   req.session.loggedin = false;
   let username = req.body.uname;
@@ -178,9 +179,12 @@ app.post("/addProducts", (req, res) => {
   }
 });
 app.get("/products", (req, res) => {
-  let result = [];
-  res.render("products.ejs", {
-    result: result,
+  let sql = "select * from products";
+  con.query(sql, function (error, results, fields, rows) {
+    if (error) throw error;
+    res.render("products.ejs", {
+      result: results,
+    });
   });
 });
 app.get("/search_products", (req, res) => {
@@ -201,17 +205,43 @@ app.get("/search_products", (req, res) => {
 });
 
 app.get("/cart", (req, res) => {
-  let sql = `select ci.product_name,ci.quantity,ci.date_added,ci.price from cart_item ci, cart c where c.userid=${req.session.userid} and c.cart_id=ci.cart_id`;
+  let total;
+  con.query(
+    `SELECT sum(price) as sum from cart_item ci,cart c where ci.cart_id=c.cart_id and c.userid=${req.session.userid} GROUP BY c.cart_id;`,
+    function (error, results, fields, rows) {
+      total = results[0].sum;
+    }
+  );
+  let sql = `select ci.product_id,ci.product_name,ci.quantity,ci.date_added,ci.price from cart_item ci, cart c where c.userid=${req.session.userid} and c.cart_id=ci.cart_id`;
+
   try {
     con.query(sql, function (error, results, fields, rows) {
       res.render("cartPage.ejs", {
         result: results,
+        total: total,
       });
-      console.log(results);
     });
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+  }
 });
+
 app.post("/cart/:id", (req, res) => {
+  console.log(req.params.id, req.session.userid);
+  let id = req.params.id;
+  con.query(
+    "delete from cart_item where product_id= and cart_id = (select cart_id from cart where userid=?)",
+    [id, req.session.userid],
+    function (error, results, fields, rows) {
+      if (error) throw error;
+      res.redirect("/cart");
+    }
+  );
+});
+
+app.post("/products/:id", (req, res) => {
+  console.log(req.params.id);
+  let result = [];
   con.query(
     "select * from cart where userid=?",
     [req.session.userid],
@@ -250,9 +280,10 @@ app.post("/cart/:id", (req, res) => {
       } else {
         let cartid = results[0].cart_id;
         con.query(
-          "select product_name,cost from products where product_id=?",
+          "select product_name,cost,type from products where product_id=?",
           [req.params.id],
           function (error, results, fields, rows) {
+            let type = results[0].type;
             con.query(
               "insert into cart_item(product_id,cart_id,product_name,quantity,date_added,price) values(?,?,?,?,?,?)",
               [
@@ -262,7 +293,10 @@ app.post("/cart/:id", (req, res) => {
                 1,
                 todayDate,
                 results[0].cost,
-              ]
+              ],
+              function (error, results, fields, rows) {
+                res.send("Added to cart");
+              }
             );
           }
         );
@@ -278,7 +312,6 @@ app.get("/profile", (req, res) => {
       "select * from user_profile where userid=?",
       [req.session.userid],
       function (error, results, fields, rows) {
-        console.log(results);
         res.render("profile.ejs", {
           result: results,
         });
@@ -286,7 +319,67 @@ app.get("/profile", (req, res) => {
     );
   } catch (error) {}
 });
-
+app.get("/payment", (req, res) => {
+  let total, count;
+  con.query(
+    `SELECT sum(price) as sum,count(*) as count from cart_item ci,cart c where ci.cart_id=c.cart_id and c.userid=${req.session.userid} GROUP BY c.cart_id`,
+    function (error, results, fields, rows) {
+      total = results[0].sum;
+      count = results[0].count;
+    }
+  );
+  con.query(
+    `select ci.product_name,ci.quantity,ci.date_added,ci.price from cart_item ci, cart c where c.userid=${req.session.userid} and c.cart_id=ci.cart_id`,
+    function (error, results, fields, rows) {
+      res.render("payment.ejs", {
+        result: results,
+        total: total,
+        count: count,
+      });
+    }
+  );
+});
+app.get("/orders", (req, res) => {
+  con.query(
+    `select ci.product_name,ci.price,py.payment_id from orders o,payment py,cart c,cart_item ci where o.payment_id=py.payment_id and py.cart_id=ci.cart_id and ci.cart_id=c.cart_id and c.userid=${req.session.userid} `,
+    function (error, results, fields, rows) {
+      res.render("orders.ejs", {
+        result: results,
+        date: todayDate,
+      });
+    }
+  );
+});
+app.post("/payment", (req, res) => {
+  con.query(
+    `select cart_id from cart where userid=${req.session.userid}`,
+    function (error, results, fields, rows) {
+      let cartid = results[0].cart_id;
+      console.log(cartid);
+      if (results != undefined) {
+        con.query(
+          `insert into payment(cart_id)values(?)`,
+          cartid,
+          function (error, results, fields, rows) {
+            con.query(
+              `select payment_id from payment where cart_id=${cartid}`,
+              function (error, results, fields, rows) {
+                console.log(results[0].payment_id);
+                con.query(
+                  "insert into orders(payment_id,cart_id)values(?,?)",
+                  [results[0].payment_id, cartid],
+                  function (error, results, fields, rows) {
+                    res.send("done");
+                  }
+                );
+              }
+            );
+          }
+        );
+      }
+    }
+  );
+});
 app.listen(port, () => {
   console.log(`app listening at http://localhost:${port}`);
 });

@@ -224,7 +224,7 @@
           <li>
             <a href="products"><strong>Products</strong></a>
           </li>
-          <li><a href="support.html">Orders</a></li>
+          <li><a href="orders">Orders</a></li>
           <li><a href="cart">Cart</a></li>
           <li style="position: absolute; left: 90%">
             <a href="profile">Profile</a>
@@ -285,7 +285,7 @@
               /><span><%= result[index].cost%></span>
             </p>
             <form
-              action="/cart/<%=result[index].product_id%>"
+              action="/products/<%=result[index].product_id%>"
               method="post"
               style="
                 position: absolute;
