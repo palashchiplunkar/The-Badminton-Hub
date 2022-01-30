@@ -10,6 +10,12 @@
       href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300&display=swap"
       rel="stylesheet"
     />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+      crossorigin="anonymous"
+    />
     <title>Welcome | Admin</title>
     <link rel="stylesheet" href="/addHome.css" />
   </head>
@@ -53,23 +59,33 @@
     <div class="divcontainer">
       <div class="container">
         <form action="addProducts">
-          <button type="submit" class="button">
-            <span></span>Add Products
+          <button type="submit" class="btn btn-primary mt-5">
+            Add Products
           </button>
         </form>
         <form action="">
-          <button type="submit" class="button">
-            <span></span>Add Services
+          <button type="submit" class="btn btn-primary mt-4">
+            Add Services
+          </button>
+        </form>
+        <form action="showOrders" method="get">
+          <button type="submit" class="btn btn-primary mt-4">
+            Orders placed
           </button>
         </form>
         <form action="">
-          <button type="submit" class="button">
-            <span></span>Show all Orders
+          <button type="button" class="btn btn-primary mt-4">
+            Booked services
+          </button>
+        </form>
+        <form action="modifyProducts">
+          <button type="submit" class="btn btn-primary mt-4">
+            Update or Delete Products
           </button>
         </form>
         <form action="">
-          <button type="submit" class="button">
-            <span></span>Show all Services
+          <button type="button" class="btn btn-primary mt-4">
+            Show All users registered
           </button>
         </form>
       </div>

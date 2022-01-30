@@ -34,38 +34,6 @@ textarea:focus {
   color: rgb(211, 210, 210);
 }
 /* Set a style for all buttons */
-.button {
-  border-radius: 25px;
-  width: 200px;
-  padding: 15px 0;
-  margin: 20px 10px;
-  font-weight: bold;
-  border: 1px solid #fff;
-  background: transparent;
-  color: #fff;
-  position: relative;
-  overflow: hidden;
-}
-
-/* Add a hover effect for buttons */
-span {
-  background: #fff;
-  height: 100%;
-  width: 0;
-  border-radius: 25px;
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  z-index: -1;
-  transition: 0.5s;
-}
-.button:hover span {
-  width: 100%;
-}
-.button:hover {
-  border: none;
-  color: black;
-}
 
 .divcontainer {
   margin: 0;
@@ -76,10 +44,8 @@ span {
   width: 80%;
 }
 .container {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
+  margin-top: 20px;
+  margin-left: 40%;
 }
 
 .line {

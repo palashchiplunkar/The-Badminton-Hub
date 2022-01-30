@@ -10,7 +10,6 @@ var mysql = require("mysql");
 const fileUpload = require("express-fileupload");
 const req = require("express/lib/request");
 const res = require("express/lib/response");
-const { loginCheck } = require("./routes/auth");
 
 var con = mysql.createConnection({
   port: 4001,
@@ -207,34 +206,51 @@ app.get("/search_products", (req, res) => {
 app.get("/cart", (req, res) => {
   let total;
   con.query(
-    `SELECT sum(price) as sum from cart_item ci,cart c where ci.cart_id=c.cart_id and c.userid=${req.session.userid} GROUP BY c.cart_id;`,
+    "select * from cart_item where cart_id in (select cart_id from cart where userid=?)",
+    [req.session.userid],
     function (error, results, fields, rows) {
-      total = results[0].sum;
+      console.log(results.length);
+      if (results.length != 0) {
+        con.query(
+          `SELECT sum(price) as sum from cart_item ci,cart c where ci.cart_id=c.cart_id and c.userid=${req.session.userid} GROUP BY c.cart_id;`,
+          function (error, results, fields, rows) {
+            total = results[0].sum;
+          }
+        );
+        let sql = `select ci.product_id,ci.product_name,ci.quantity,ci.date_added,ci.price from cart_item ci, cart c where c.userid=${req.session.userid} and c.cart_id=ci.cart_id`;
+
+        try {
+          con.query(sql, function (error, results, fields, rows) {
+            res.render("cartPage.ejs", {
+              result: results,
+              total: total,
+              msg: "",
+            });
+          });
+        } catch (error) {
+          console.log(error);
+        }
+      } else {
+        res.render("cartPage.ejs", {
+          result: [],
+          total: 0,
+          msg: "Your Cart is Empty",
+        });
+      }
     }
   );
-  let sql = `select ci.product_id,ci.product_name,ci.quantity,ci.date_added,ci.price from cart_item ci, cart c where c.userid=${req.session.userid} and c.cart_id=ci.cart_id`;
-
-  try {
-    con.query(sql, function (error, results, fields, rows) {
-      res.render("cartPage.ejs", {
-        result: results,
-        total: total,
-      });
-    });
-  } catch (error) {
-    console.log(error);
-  }
 });
 
-app.post("/cart/:id", (req, res) => {
+app.post("/cart/delete/:id", (req, res) => {
   console.log(req.params.id, req.session.userid);
   let id = req.params.id;
   con.query(
-    "delete from cart_item where product_id= and cart_id = (select cart_id from cart where userid=?)",
-    [id, req.session.userid],
+    `delete from cart_item where product_id=${id} and cart_id = (select cart_id from cart where userid=${req.session.userid})`,
+
     function (error, results, fields, rows) {
       if (error) throw error;
       res.redirect("/cart");
+      console.log(results);
     }
   );
 });
@@ -340,16 +356,47 @@ app.get("/payment", (req, res) => {
   );
 });
 app.get("/orders", (req, res) => {
+  let cartid = 0;
   con.query(
-    `select ci.product_name,ci.price,py.payment_id from orders o,payment py,cart c,cart_item ci where o.payment_id=py.payment_id and py.cart_id=ci.cart_id and ci.cart_id=c.cart_id and c.userid=${req.session.userid} `,
+    `select cart_id from cart where userid=${req.session.userid}`,
     function (error, results, fields, rows) {
-      res.render("orders.ejs", {
-        result: results,
-        date: todayDate,
-      });
+      cartid = results[0].cart_id;
+      console.log(cartid);
+    }
+  );
+  con.query(
+    `select * from payment py,cart_item ci,cart c where py.cart_id=ci.cart_id and c.cart_id=ci.cart_id and c.userid=${req.session.userid}`,
+    function (error, results, fields, rows) {
+      if (results != undefined) {
+        con.query(
+          `select o.order_id,p.product_name,p.cost as price,o.payment_id from products p,orders o where p.product_id=o.product_id and cart_id=${cartid} `,
+          function (error, results, fields, rows) {
+            if (error) throw error;
+            res.render("orders.ejs", {
+              result: results,
+              date: todayDate,
+            });
+          }
+        );
+      } else {
+        res.render("orders.ejs", {
+          result: [],
+          date: null,
+        });
+      }
     }
   );
 });
+
+app.post("/orders/delete/:id", (req, res) => {
+  con.query(
+    `delete from orders where order_id=${req.params.id}`,
+    function (error, results, fields, rows) {
+      res.redirect("/orders");
+    }
+  );
+});
+
 app.post("/payment", (req, res) => {
   con.query(
     `select cart_id from cart where userid=${req.session.userid}`,
@@ -364,12 +411,32 @@ app.post("/payment", (req, res) => {
             con.query(
               `select payment_id from payment where cart_id=${cartid}`,
               function (error, results, fields, rows) {
-                console.log(results[0].payment_id);
+                let len = results.length;
+                let paymentid = results[len - 1].payment_id;
                 con.query(
-                  "insert into orders(payment_id,cart_id)values(?,?)",
-                  [results[0].payment_id, cartid],
+                  `select product_id from cart_item where cart_id=${cartid}`,
                   function (error, results, fields, rows) {
-                    res.send("done");
+                    productid = [];
+                    for (let j = 0; j < results.length; j++) {
+                      productid.push(results[j].product_id);
+                    }
+
+                    let values = [];
+                    let val = [];
+                    for (let i = 0; i < productid.length; i++) {
+                      val.push(paymentid, cartid, productid[i]);
+                      values.push(val);
+                      val = [];
+                    }
+
+                    con.query(
+                      "insert into orders(payment_id,cart_id,product_id)values ?",
+                      [values],
+                      function (error, results, fields, rows) {
+                        if (error) throw error;
+                        res.redirect("/orders");
+                      }
+                    );
                   }
                 );
               }
@@ -380,6 +447,68 @@ app.post("/payment", (req, res) => {
     }
   );
 });
+app.get("/showOrders", (req, res) => {
+  con.query(
+    `select p.product_name,p.cost,o.payment_id,u.UName from products p,orders o,cart c,user_profile u where o.product_id=p.product_id and c.cart_id=o.cart_id and c.userid=u.userid;`,
+    function (error, results, fields, rows) {
+      if (error) throw error;
+      res.render("showOrders.ejs", {
+        result: results,
+      });
+    }
+  );
+});
+
+app.get("/modifyProducts", (req, res) => {
+  con.query("select * from products", function (error, results, fields, rows) {
+    res.render("modifyProducts.ejs", {
+      result: results,
+    });
+  });
+});
+app.get("/edit/:id", (req, res) => {
+  con.query(
+    `select * from products where product_id=${req.params.id}`,
+    function (error, results, fields, rows) {
+      res.render("editProduct.ejs", {
+        result: results,
+      });
+    }
+  );
+});
+app.post("/edit-form/:id", (req, res) => {
+  let samplefile;
+  let uploadPath;
+  if (!req.files || Object.keys(req.files).length === 0) {
+    return res.status(400).send("No files were uploaded");
+  }
+  samplefile = req.files.img;
+  uploadPath = __dirname + "/uploads/" + samplefile.name;
+  samplefile.mv(uploadPath, function (err) {
+    if (err) res.status(500).send(err);
+  });
+  var product_name = req.body.pname;
+  var description = req.body.description;
+  var price = req.body.cost;
+  var type = req.body.select_product;
+  var id = req.params.id;
+  var sql = `UPDATE products SET product_name="${product_name}", description="${description}", cost="${price}" ,Type="${type}",product_image="${samplefile.name}" WHERE product_id=${id}`;
+
+  con.query(sql, function (err, result) {
+    if (err) throw err;
+    res.redirect("/modifyProducts");
+  });
+});
+app.get("/delete-product/:id", (req, res) => {
+  con.query(
+    `delete from products where product_id=${req.params.id}`,
+    function (error, results, fields, rows) {
+      if (error) throw error;
+      res.redirect("/modifyProducts");
+    }
+  );
+});
+
 app.listen(port, () => {
   console.log(`app listening at http://localhost:${port}`);
 });
