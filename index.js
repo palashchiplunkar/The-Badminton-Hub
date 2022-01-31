@@ -508,7 +508,83 @@ app.get("/delete-product/:id", (req, res) => {
     }
   );
 });
+app.get("/showUsers", (req, res) => {
+  con.query(
+    "select * from user_profile",
+    function (error, results, fields, rows) {
+      res.render("showUsers.ejs", {
+        result: results,
+      });
+    }
+  );
+});
 
+app.get("/addServices", (req, res) => {
+  if (req.session.adminlogin == true) {
+    res.render("addServices.ejs", {
+      msg: "",
+    });
+  } else {
+    res.redirect("login");
+  }
+});
+app.post("/addServices", (req, res) => {
+  let samplefile;
+  let uploadPath;
+  if (!req.files || Object.keys(req.files).length === 0) {
+    return res.status(400).send("No files were uploaded");
+  }
+  samplefile = req.files.img;
+  uploadPath = __dirname + "/uploads/" + samplefile.name;
+  samplefile.mv(uploadPath, function (err) {
+    if (err) res.status(500).send(err);
+  });
+  try {
+    let sname = req.body.sname;
+    let description = req.body.description;
+    let cost = req.body.cost;
+    con.query(
+      "insert into services(service_name,description,price,service_image)values(?,?,?,?)",
+      [sname, description, cost, samplefile.name],
+      function (error, results, fields, rows) {
+        res.render("addServices.ejs", {
+          msg: "Service added Successfully",
+        });
+      }
+    );
+  } catch (error) {
+    res.redirect("addServices", {
+      msg: "",
+    });
+  }
+});
+app.get("/services", (req, res) => {
+  con.query("select * from services", function (error, results, fields, rows) {
+    res.render("services.ejs", {
+      result: results,
+    });
+  });
+});
+
+app.post("/services/:id", (req, res) => {
+  con.query(
+    `insert into booking(service_id,userid)values(${req.params.id},${req.session.userid})`,
+    function (error, results, fields, rows) {
+      if (error) throw error;
+      res.send("Booked successfully");
+    }
+  );
+});
+app.get("/bookedServices", (req, res) => {
+  con.query(
+    "select s.service_name,s.description,s.price,u.UName from services s,booking b,user_profile u where b.service_id=s.service_id and b.userid=u.userid",
+    function (error, results, fields, rows) {
+      res.render("showServices.ejs", {
+        result: results,
+      });
+    }
+  );
+});
 app.listen(port, () => {
   console.log(`app listening at http://localhost:${port}`);
 });
