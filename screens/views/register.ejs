@@ -27,7 +27,7 @@
       >
         Create profile
       </p>
-    <form action="register" method="post">
+    <form action="register" onsubmit=" return validate()" method="post">
      
       </div>
       <div class="line"></div>
@@ -83,16 +83,30 @@
           >
         </div>
       </div>
+
     </form>
     <script>
       function validate(){
           let pas1=document.getElementById("pass1").value;
           let pas2=document.getElementById("pass2").value;
           if(pas1!=pas2){
+           
               alert("Passwords are not Matching!!")
+              return false
+          }
+          else{
+            return true
           }
 
       }
     </script>
+    <% if(msg!=''){ %>
+      <!-- <div class="alert alert-danger" role="alert" style="position: absolute; left: 40%;top: 100%;">
+          <strong> </strong> 
+      </div> -->
+      <script>
+        alert("User already registered with this email")
+      </script>
+  <% } %>
   </body>
 </html>

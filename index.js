@@ -53,7 +53,9 @@ app.get("/login", (req, res) => {
 });
 app.get("/register", (req, res) => {
   req.session.loggedin = false;
-  res.render("register.ejs");
+  res.render("register.ejs", {
+    msg: "",
+  });
 });
 app.get("/home", (req, res) => {
   if (req.session.loggedin == true) {
@@ -111,10 +113,22 @@ app.post("/register", async (req, res) => {
   let address = req.body.Address;
   try {
     con.query(
-      "insert into user_profile(UName,UEmail,UPassword,Phno,Bdate,Address)values(?,?,?,?,?,?)",
-      [username, email, password, phno, bdate, address],
+      `select * from user_profile where UEmail="${email}"`,
       function (error, results, fields, rows) {
-        res.render("login.ejs", { title: "login", msg: "" });
+        if (error) throw error;
+        if (results.length == 0) {
+          con.query(
+            "insert into user_profile(UName,UEmail,UPassword,Phno,Bdate,Address)values(?,?,?,?,?,?)",
+            [username, email, password, phno, bdate, address],
+            function (error, results, fields, rows) {
+              res.render("login.ejs", { title: "login", msg: "" });
+            }
+          );
+        } else {
+          res.render("register.ejs", {
+            msg: "user already registered",
+          });
+        }
       }
     );
   } catch {
@@ -285,7 +299,10 @@ app.post("/products/:id", (req, res) => {
                         1,
                         todayDate,
                         results[0].cost,
-                      ]
+                      ],
+                      function (error, results, fields, rows) {
+                        res.send("<h1>Added To cart</h1>");
+                      }
                     );
                   }
                 );
@@ -311,7 +328,7 @@ app.post("/products/:id", (req, res) => {
                 results[0].cost,
               ],
               function (error, results, fields, rows) {
-                res.send("Added to cart");
+                res.send("<h1>Added To cart</h1>");
               }
             );
           }
@@ -571,7 +588,7 @@ app.post("/services/:id", (req, res) => {
     `insert into booking(service_id,userid)values(${req.params.id},${req.session.userid})`,
     function (error, results, fields, rows) {
       if (error) throw error;
-      res.send("Booked successfully");
+      res.send("<h1>Booked Successfully</h1>");
     }
   );
 });
