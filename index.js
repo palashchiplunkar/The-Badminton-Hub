@@ -223,7 +223,6 @@ app.get("/cart", (req, res) => {
     "select * from cart_item where cart_id in (select cart_id from cart where userid=?)",
     [req.session.userid],
     function (error, results, fields, rows) {
-      console.log(results.length);
       if (results.length != 0) {
         con.query(
           `SELECT sum(price) as sum from cart_item ci,cart c where ci.cart_id=c.cart_id and c.userid=${req.session.userid} GROUP BY c.cart_id;`,
@@ -270,7 +269,6 @@ app.post("/cart/delete/:id", (req, res) => {
 });
 
 app.post("/products/:id", (req, res) => {
-  console.log(req.params.id);
   let result = [];
   con.query(
     "select * from cart where userid=?",
@@ -339,7 +337,6 @@ app.post("/products/:id", (req, res) => {
 });
 
 app.get("/profile", (req, res) => {
-  console.log(req.session.userid);
   try {
     con.query(
       "select * from user_profile where userid=?",
@@ -378,7 +375,6 @@ app.get("/orders", (req, res) => {
     `select cart_id from cart where userid=${req.session.userid}`,
     function (error, results, fields, rows) {
       cartid = results[0].cart_id;
-      console.log(cartid);
     }
   );
   con.query(
@@ -419,7 +415,7 @@ app.post("/payment", (req, res) => {
     `select cart_id from cart where userid=${req.session.userid}`,
     function (error, results, fields, rows) {
       let cartid = results[0].cart_id;
-      console.log(cartid);
+
       if (results != undefined) {
         con.query(
           `insert into payment(cart_id)values(?)`,
